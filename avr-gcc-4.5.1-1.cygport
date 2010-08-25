@@ -1,0 +1,40 @@
+TOOLCHAIN_TARGET="avr"
+ORIG_PN="gcc"
+inherit toolchain
+
+DESCRIPTION="GCC for AVR toolchain"
+HOMEPAGE="http://gcc.gnu.org/"
+
+case ${#PV[3]} in
+8)	snapshot_v="${PV[1]}.${PV[2]}-${PV[3]}"
+	SRC_URI="mirror://gcc/snapshots/${snapshot_v}/gcc-core-${snapshot_v}.tar.bz2
+		mirror://gcc/snapshots/${snapshot_v}/gcc-g++-${snapshot_v}.tar.bz2"
+	SRC_DIR="gcc-${snapshot_v}"
+	;;
+*)	SRC_URI="mirror://gnu/gcc/gcc-${PV}/gcc-core-${PV}.tar.bz2
+		mirror://gnu/gcc/gcc-${PV}/gcc-g++-${PV}.tar.bz2"
+	SRC_DIR="gcc-${PV}"
+	;;
+esac
+
+PATCH_URI="config-rpath.patch
+           4.5.1-new_devices.patch"
+
+# headers: we don't use sysroot for avr-libc
+CYGCONF_ARGS="
+	--enable-languages=c,c++
+	--enable-version-specific-runtime-libs
+	--disable-libssp
+	--with-system-zlib
+"
+
+src_install() {
+	cd ${B}
+	cyginstall -j1
+
+	# Remove Cygwin-host libiberty.a
+	rm -f ${D}/usr/lib/libiberty.a
+
+	# conflicts with native gcc
+	rm -fr ${D}/usr/share/{gcc-*,info,locale,man/man7}
+}
