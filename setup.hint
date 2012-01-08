@@ -1,5 +1,5 @@
 category: Devel
-requires: libcloog0 libelf0 libgmp3 libiconv2 libintl8 libmpc1 libmpfr1 libppl zlib0 avr-binutils avr-libc
+requires: libcloog0 libelf0 libgmp3 libiconv2 libintl8 libmpc1 libmpfr4 libppl zlib0 avr-binutils avr-libc
 sdesc: "GNU compiler for AVR toolchain"
 ldesc: "The GNU Compiler Collection includes front ends for C, C++, 
 Objective-C, Fortran, Java, and Ada, as well as libraries for these 

@@ -17,8 +17,7 @@ case ${#PV[3]} in
 	;;
 esac
 
-PATCH_URI="config-rpath.patch
-           4.5.1-new_devices.patch"
+PATCH_URI="config-rpath.patch"
 
 # headers: we don't use sysroot for avr-libc
 CYGCONF_ARGS="
