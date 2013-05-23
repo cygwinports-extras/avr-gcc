@@ -1,0 +1,56 @@
+NAME="avr-gcc"
+VERSION=4.5.3
+RELEASE=1
+TOOLCHAIN_TARGET="avr"
+inherit toolchain
+
+NAME="avr-gcc"
+VERSION=4.7.3
+RELEASE=1
+CATEGORY="Devel"
+SUMMARY="GCC for AVR toolchain"
+DESCRIPTION="The GNU Compiler Collection includes front ends for C, C++,
+Objective-C, Fortran, Java, and Ada, as well as libraries for these languages
+(libstdc++, libgcj, etc.).  This package provides cross-compilers for the
+AVR embedded platform."
+HOMEPAGE="http://gcc.gnu.org/"
+
+case ${VERSION} in
+[3-9].[0-9]-20[1-9][0-9][01][0-9][0-3][0-9])
+	SRC_URI="mirror://gcc/snapshots/${VERSION}/gcc-${VERSION}.tar.bz2"
+	;;
+*)	SRC_URI="mirror://gnu/gcc/gcc-${VERSION}/gcc-${VERSION}.tar.bz2"
+	;;
+esac
+SRC_DIR="gcc-${VERSION}"
+
+PATCH_URI="
+	http://pkgs.fedoraproject.org/cgit/avr-gcc.git/plain/avr-gcc-4.5.3-mint8.patch
+	4.8-lto-plugin-soname.patch
+"
+
+avr_gcc_REQUIRES="avr-binutils avr-libc"
+
+# headers: we don't use sysroot for avr-libc
+CYGCONF_ARGS="
+	--enable-languages=c,c++
+	--enable-version-specific-runtime-libs
+	--disable-libssp
+	--with-avrlibc
+	--with-cloog-include=/usr/include/cloog-ppl
+	--with-gnu-as --with-gnu-ld
+	--with-system-zlib
+"
+
+src_install() {
+	cd ${B}
+	cyginstall -j1
+
+	# Remove Cygwin-host libiberty.a
+	rm -f ${D}/usr/lib/libiberty.a
+
+	# conflicts with native gcc
+	rm -fr ${D}/usr/share/{gcc-*,info,locale,man/man7}
+}
+
+KEEP_LA_FILES="none"
